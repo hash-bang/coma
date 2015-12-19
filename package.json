@@ -1,0 +1,28 @@
+{
+  "name": "coma",
+  "version": "1.0.0",
+  "description": "Node CLI to enhance the GNU `sleep` command",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hash-bang/coma.git"
+  },
+  "keywords": [
+    "sleep",
+    "cli"
+  ],
+  "author": "Matt Carter <m@ttcarter.com> (https://github.com/hash-bang)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hash-bang/coma/issues"
+  },
+  "homepage": "https://github.com/hash-bang/coma#readme",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "commander": "^2.9.0",
+    "fromnow": "^2.0.0",
+    "moment": "^2.10.6",
+    "moment-relative": "^1.0.0",
+    "parse-messy-time": "^1.2.2"
+  }
+}
