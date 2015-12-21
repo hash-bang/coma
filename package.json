@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Node CLI to enhance the GNU `sleep` command",
   "main": "app.js",
+  "bin": {
+    "coma": "./app.js"
+  },
+  "preferGlobal": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hash-bang/coma.git"
