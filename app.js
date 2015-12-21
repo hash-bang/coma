@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+var clui = require('clui');
 var colors = require('colors');
 var program = require('commander');
 var moment = require('moment');
@@ -64,16 +65,20 @@ if (!parsedTime) {
 if (program.verbose) console.log(colors.blue('[Coma]'), 'Sleeping until', colors.cyan(parsedTime.toString()));
 if (program.verbose) console.log(colors.blue('[Coma]'), 'Sleeping', colors.cyan(moment.duration(parsedTime.getTime() - (new Date).getTime(), 'milliseconds').humanize()));
 
+if (program.countdown) {
+	var spinner = new clui.Spinner('Prepairing...');
+	spinner.start();
+}
+
 setInterval(function() {
 	var now = (new Date);
 	if (parsedTime < now) {
 		if (program.verbose) console.log(colors.blue('[Coma]'), colors.bold.green('Completed!'));
+		if (program.countdown) spinner.stop();
 		process.exit(0);
 	} else if (program.countdown) {
 		var momentD = moment.duration(parsedTime.getTime() - now.getTime(), 'milliseconds');
 
-		console.log(colors.blue('[Coma]'), 'Remaining time', colors.cyan(
-			momentD.humanize()
-		));
+		spinner.message('Remaining time: ' + colors.cyan(momentD.humanize()));
 	}
 }, 1000);

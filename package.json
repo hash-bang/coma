@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/hash-bang/coma#readme",
   "dependencies": {
+    "clui": "^0.3.1",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "moment": "^2.10.6",
