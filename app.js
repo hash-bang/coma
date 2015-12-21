@@ -25,8 +25,14 @@ if (program.verbose > 1) console.log(colors.blue('[Coma]'), 'Trying to parse', t
 // Main time parser {{{
 var parsedTime = function(time) {
 	// Parse with moment
-	var parsedMoment = moment(time);
-	if (parsedMoment.isValid()) return parsedMoment.toDate(time);
+	try {
+		var parsedRawDate = Date.parse(time);
+		var parsedMoment = moment(parsedRawDate);
+		if (parsedMoment.isValid()) return parsedMoment.toDate(time);
+	} catch (e) {
+		console.log('C!');
+		// Ignore moment complaints and try next method
+	}
 
 	// Parse with moment-relative
 	try {
