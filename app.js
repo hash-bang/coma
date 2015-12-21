@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var colors = require('colors');
-var fromnow = require('fromnow');
 var program = require('commander');
 var moment = require('moment');
 var momentRelative = require('moment-relative');
@@ -57,7 +56,7 @@ if (!parsedTime) {
 // }}}
 
 if (program.verbose > 1) console.log(colors.blue('[Coma]'), 'Sleeping until', colors.cyan(parsedTime.toString()));
-if (program.verbose) console.log(colors.blue('[Coma]'), 'Sleeping', colors.cyan(fromnow(parsedTime.toString())));
+if (program.verbose) console.log(colors.blue('[Coma]'), 'Sleeping', colors.cyan(moment.duration(parsedTime.getTime() - (new Date).getTime(), 'milliseconds').humanize()));
 
 setInterval(function() {
 	var now = (new Date);
@@ -65,6 +64,10 @@ setInterval(function() {
 		if (program.verbose) console.log(colors.blue('[Coma]'), colors.bold.green('Completed!'));
 		process.exit(0);
 	} else if (program.countdown) {
-		console.log(colors.blue('[Coma]'), 'Remaining time', colors.cyan(fromnow(parsedTime.toString())));
+		var momentD = moment.duration(parsedTime.getTime() - now.getTime(), 'milliseconds');
+
+		console.log(colors.blue('[Coma]'), 'Remaining time', colors.cyan(
+			momentD.humanize()
+		));
 	}
 }, 1000);
