@@ -61,7 +61,7 @@ if (!parsedTime) {
 }
 // }}}
 
-if (program.verbose > 1) console.log(colors.blue('[Coma]'), 'Sleeping until', colors.cyan(parsedTime.toString()));
+if (program.verbose) console.log(colors.blue('[Coma]'), 'Sleeping until', colors.cyan(parsedTime.toString()));
 if (program.verbose) console.log(colors.blue('[Coma]'), 'Sleeping', colors.cyan(moment.duration(parsedTime.getTime() - (new Date).getTime(), 'milliseconds').humanize()));
 
 setInterval(function() {
