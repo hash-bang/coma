@@ -18,6 +18,16 @@ if (!program.args.length) {
 	process.exit(1);
 }
 
+function countdownFormat(fromDate, toDate) {
+	var momentD = moment.duration(toDate.getTime() - fromDate.getTime(), 'milliseconds');
+	var remaining = momentD.humanize();
+	if (remaining == 'a minute' || remaining == 'a few seconds') { // Extend on this rather rough approximation
+		var secs = momentD.seconds();
+		return (secs == 1) ? '1 second' : secs + ' seconds';
+	} else {
+		return remaining;
+	}
+};
 
 // Try parse with moment
 var time = program.args.join(' ');
@@ -31,7 +41,6 @@ var parsedTime = function(time) {
 		var parsedMoment = moment(parsedRawDate);
 		if (parsedMoment.isValid()) return parsedMoment.toDate(time);
 	} catch (e) {
-		console.log('C!');
 		// Ignore moment complaints and try next method
 	}
 
@@ -63,7 +72,7 @@ if (!parsedTime) {
 // }}}
 
 if (program.verbose) console.log(colors.blue('[Coma]'), 'Sleeping until', colors.cyan(parsedTime.toString()));
-if (program.verbose) console.log(colors.blue('[Coma]'), 'Sleeping', colors.cyan(moment.duration(parsedTime.getTime() - (new Date).getTime(), 'milliseconds').humanize()));
+if (program.verbose) console.log(colors.blue('[Coma]'), 'Sleeping', colors.cyan(countdownFormat(new Date, parsedTime)));
 
 if (program.countdown) {
 	var spinner = new clui.Spinner('Prepairing...');
@@ -73,12 +82,10 @@ if (program.countdown) {
 setInterval(function() {
 	var now = (new Date);
 	if (parsedTime < now) {
-		if (program.verbose) console.log(colors.blue('[Coma]'), colors.bold.green('Completed!'));
 		if (program.countdown) spinner.stop();
+		if (program.verbose) console.log(colors.blue('[Coma]'), colors.bold.green('Completed!'));
 		process.exit(0);
 	} else if (program.countdown) {
-		var momentD = moment.duration(parsedTime.getTime() - now.getTime(), 'milliseconds');
-
-		spinner.message('Remaining time: ' + colors.cyan(momentD.humanize()));
+		spinner.message('Remaining time: ' + colors.cyan(countdownFormat(now, parsedTime)));
 	}
 }, 1000);
