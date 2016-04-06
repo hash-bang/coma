@@ -15,3 +15,5 @@ Parses a time expression, waits and quits. Designed to be used within a shell sc
 
 
 Can also optionally take a `-c` / `--countdown` parameter to display the time remaining on the console every second.
+
+The envionment variable `COMA` can be populated with default options to use if no arguments are specified. e.g. `export COMA='midnight tomorrow' -cv`.

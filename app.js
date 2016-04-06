@@ -6,16 +6,27 @@ var program = require('commander');
 var moment = require('moment');
 var momentRelative = require('moment-relative');
 var parseMessyTime = require('parse-messy-time');
+var spawnArgs = require('spawn-args');
 
 program
 	.version(require('./package.json').version)
+	.usage('[time to sleep until]')
 	.option('-c, --countdown', 'Display a countdown')
 	.option('-v, --verbose', 'Be verbose. Specify multiple times for increasing verbosity', function(i, v) { return v + 1 }, 0)
 	.parse(process.argv);
 
 if (!program.args.length) {
-	console.log('No time specified');
-	process.exit(1);
+	if (process.env.COMA) {
+		if (program.verbose > 1) console.log(colors.blue('[Coma]'), 'Reading in environment variable', colors.cyan('COMA'), 'as', colors.cyan(process.env.COMA));
+		program.parse(process.argv.concat(spawnArgs(process.env.COMA)));
+		if (!program.args.length) {
+			console.log('Read in the COMA environment variable but there is still no time specified');
+			process.exit(1);
+		}
+	} else {
+		console.log('No time specified');
+		process.exit(1);
+	}
 }
 
 function countdownFormat(fromDate, toDate) {
@@ -31,7 +42,7 @@ function countdownFormat(fromDate, toDate) {
 
 // Try parse with moment
 var time = program.args.join(' ');
-if (program.verbose > 1) console.log(colors.blue('[Coma]'), 'Trying to parse', time);
+if (program.verbose > 1) console.log(colors.blue('[Coma]'), 'Trying to parse', colors.cyan(time));
 
 // Main time parser {{{
 var parsedTime = function(time) {

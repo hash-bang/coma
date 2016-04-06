@@ -1,6 +1,6 @@
 {
   "name": "coma",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Node CLI to enhance the GNU `sleep` command",
   "main": "app.js",
   "bin": {
@@ -27,6 +27,7 @@
     "commander": "^2.9.0",
     "moment": "^2.10.6",
     "moment-relative": "^1.0.0",
-    "parse-messy-time": "^1.2.2"
+    "parse-messy-time": "^1.2.2",
+    "spawn-args": "^0.1.0"
   }
 }
