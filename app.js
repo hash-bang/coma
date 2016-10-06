@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
-var clui = require('clui');
-var colors = require('colors');
+var _ = require('lodash');
+var colors = require('chalk');
 var program = require('commander');
 var moment = require('moment');
 var momentRelative = require('moment-relative');
 var parseMessyTime = require('parse-messy-time');
 var spawnArgs = require('spawn-args');
+var yapb = require('yapb');
 
 program
 	.version(require('./package.json').version)
@@ -30,14 +31,8 @@ if (!program.args.length) {
 }
 
 function countdownFormat(fromDate, toDate) {
-	var momentD = moment.duration(toDate.getTime() - fromDate.getTime(), 'milliseconds');
-	var remaining = momentD.humanize();
-	if (remaining == 'a minute' || remaining == 'a few seconds') { // Extend on this rather rough approximation
-		var secs = momentD.seconds();
-		return (secs == 1) ? '1 second' : secs + ' seconds';
-	} else {
-		return remaining;
-	}
+	var dur = moment.duration(toDate.getTime() - fromDate.getTime(), 'milliseconds');
+	return _.padStart(dur.get('hours'), 2, '0') + ':' + _.padStart(dur.get('minutes'), 2, '0') + ':' + _.padStart(dur.get('seconds'), 2, '0');
 };
 
 // Try parse with moment
@@ -86,17 +81,21 @@ if (program.verbose) console.log(colors.blue('[Coma]'), 'Sleeping until', colors
 if (program.verbose) console.log(colors.blue('[Coma]'), 'Sleeping', colors.cyan(countdownFormat(new Date, parsedTime)));
 
 if (program.countdown) {
-	var spinner = new clui.Spinner('Prepairing...');
-	spinner.start();
+	var progress = yapb('{{#blue}}[Coma]{{/blue}} {{#bold}}{{#blue}}{{spinner}}{{/blue}}{{/bold}} Counting down {{#cyan}}{{remaining}}{{/cyan}}', {
+		spinnerTheme: 'toggle9',
+		remaining: 'Calculating...',
+	});
 }
 
-setInterval(function() {
+var tick = function() {
 	var now = (new Date);
 	if (parsedTime < now) {
-		if (program.countdown) spinner.stop();
+		if (program.countdown) progress.remove();
 		if (program.verbose) console.log(colors.blue('[Coma]'), colors.bold.green('Completed!'));
-		process.exit(0);
+		// process.exit(0);
 	} else if (program.countdown) {
-		spinner.message('Remaining time: ' + colors.cyan(countdownFormat(now, parsedTime)));
+		progress.update({remaining: countdownFormat(now, parsedTime)});
+		setTimeout(tick, 100);
 	}
-}, 1000);
+};
+tick();
